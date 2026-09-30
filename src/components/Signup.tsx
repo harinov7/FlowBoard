@@ -1,11 +1,11 @@
-export default function Register() {
+export default function Signup() {
 
     return (
-        <div className="px-7 pt-10 flex justify-center">
-            <div className="flex flex-col gap-2 w-[clamp(20px,80vw,280px)]">
+        <div className="flex justify-center md:pt-10">
+            <div className="px-0 py-10 flex flex-col gap-2 w-[clamp(20px,80vw,320px)] md:shadow-lg md:px-10">
                 <div className="flex flex-col gap-2 items-center">
                     <h1 className="text-3xl font-bold">Flow Board</h1>
-                    <h2>Register</h2>
+                    <h2>Signup</h2>
                 </div>
                 <form className="flex flex-col gap-2">
                     <span>

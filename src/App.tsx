@@ -1,10 +1,10 @@
-import Register from "./components/Register"
+import Dashboard from "./components/Dashboard"
 
 function App() {
 
   return (
     <>
-    <Register />
+    <Dashboard />
     </>
   )
 }
