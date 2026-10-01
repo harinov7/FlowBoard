@@ -1,32 +1,5 @@
-interface Assignee {
-    initials: string,
-    style: string
-}
-
-interface Card {
-    id: string,
-    title: string,
-    description?: string,
-    label: string,
-    labelStyle: string,
-    dueDate?: string,
-    completed?: boolean,
-    assignee?: Assignee
-}
-
-interface Column {
-    title: string,
-    dotColor: string,
-    cards: Card[]
-}
-
-interface Project {
-    workspace: string,
-    title: string,
-    description: string,
-    members: Assignee[],
-    columns: Column[]
-}
+import { Link } from 'react-router-dom';
+import type { Project } from "./project.ts";
 
 const focus =
     "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#172a3a]";
@@ -34,7 +7,11 @@ const focus =
 const outlineButton =
     `rounded-md border border-[#b9c6cf] bg-white px-3 py-1.5 text-sm font-medium text-[#172a3a] hover:bg-[#f3f6f8] ${focus}`;
 
-export default function Kanban({ project }: { project: Project }) {
+interface kanbanProps {
+    project: Project
+}
+
+export default function Kanban({ project }: kanbanProps) {
     const allCards = project.columns.flatMap((column) => column.cards);
     const doneCount = allCards.filter((card) => card.completed).length;
     const me = project.members[0];
@@ -44,9 +21,9 @@ export default function Kanban({ project }: { project: Project }) {
             <header className="border-b border-[#c9d3da] bg-[#f6f8f9]">
                 <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 sm:px-8">
                     <div className="flex items-baseline gap-3">
-                        <a href="#" className={`text-[17px] font-bold tracking-tight ${focus}`}>
+                        <Link to="/" className={`text-[17px] font-bold tracking-tight ${focus}`}>
                             FlowBoard
-                        </a>
+                        </Link>
                         <span className="text-sm text-[#5b6b78]">{project.workspace}</span>
                     </div>
 
