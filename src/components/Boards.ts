@@ -1,25 +1,4 @@
-import type { Board, Project } from "./project";
-
-export const boards: Board[] = [
-    {
-        id: "board-1",
-        titleDashboard: "Website Redesign",
-        descriptionDashboard: "Penyegaran tampilan dan pengalaman website.",
-        backgroundDashboard: "bg-[#dce8df]",
-        accent: "bg-[#496b55]",
-        updated: "Diperbarui hari ini",
-        membersDashboard: ["FA", "AN", "RA"],
-    },
-    {
-        id: "board-2",
-        titleDashboard: "Mobile App",
-        descriptionDashboard: "Perencanaan fitur untuk aplikasi mobile.",
-        backgroundDashboard: "bg-[#e7e2d7]",
-        accent: "bg-[#806b43]",
-        updated: "Diperbarui kemarin",
-        membersDashboard: ["FA", "DI"],
-    },
-];
+import type { Project } from "./project";
 
 const websiteRedesign: Project = {
     board: {

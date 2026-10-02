@@ -62,7 +62,7 @@ export default function Dashboard({boards}: {boards: Board[]}) {
                         <button
                             key={board.id}
                             type="button"
-                            onClick={() => navigate(`/${board.id}`)}
+                            onClick={() => navigate(`/Dashboard/${board.id}`)}
                             className="group overflow-hidden rounded-lg border border-[#e4e5df] bg-white text-left transition hover:border-[#c8cec6] hover:shadow-sm"
                         >
                             <div className={`h-24 ${board.backgroundDashboard} p-4`}>
