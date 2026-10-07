@@ -1,4 +1,6 @@
 import { useNavigate, Link } from "react-router-dom";
+import { UserAuth } from "../context/AuthContext";
+import { useState } from "react";
 
 const focus =
     "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#172a3a]";
@@ -8,9 +10,61 @@ const providerButton =
 
 const stageColors = ["bg-[#92978d]", "bg-[#b18b4a]", "bg-[#66816c]", "bg-[#426b50]"];
 
+interface result {
+    success: boolean;
+    data?: any;
+    error?: any
+}
+
+interface error {
+    email: string;
+    password: string;
+    missing: string
+}
+
 export default function Signin() {
 
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [error, setError] = useState<error>({ email: "", password: "", missing: "" });
+    const [loading, setLoading] = useState<boolean>(false);
+
     const navigate = useNavigate()
+    const { signInUser } = UserAuth()
+
+    async function handleSignIn(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault()
+        setLoading(true)
+
+        const newErrors: error = { email: "", password: "", missing: "" };
+
+        if (email.trim().length === 0) {
+            newErrors.email = "you didn't pass the email yet";
+        }
+        if (password.trim().length === 0) {
+            newErrors.password = "you didn't pass the password yet";
+        }
+
+        try {
+            const result: result = await signInUser(email, password);
+
+            if (result.success) {
+                navigate("/dashboard")
+            }
+            if (!newErrors.email && !newErrors.password && result.error) {
+                newErrors.missing = "Invalid credential"
+            }
+
+            setError(newErrors);
+        } catch (err) {
+            console.error("an error occured: ", err)
+        } finally {
+            setLoading(false)
+        }
+
+        console.log(error)
+    }
+
     return (
         <div className="flex min-h-dvh flex-col items-center justify-center bg-[#e9eef1] px-5 py-10 font-['Schibsted_Grotesk',system-ui,sans-serif] text-[#172a3a]">
             <a href="#" className={`mb-6 text-[17px] font-bold tracking-tight ${focus}`}>
@@ -32,36 +86,41 @@ export default function Signin() {
                         Use your email or another account.
                     </p>
 
-                    <form className="mt-4">
+                    <form onSubmit={handleSignIn} className="mt-4">
                         <label htmlFor="emailInput" className="text-sm font-medium">
                             Email
                         </label>
                         <span className='text-red-500'>*</span>
                         <input
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                             type="email"
                             id="emailInput"
                             autoComplete="email"
                             placeholder="you@example.com"
                             className="mt-1.5 h-10 w-full rounded-md border border-[#b9c6cf] bg-white px-3 text-[15px] placeholder:text-[#8a99a5] focus:border-[#426b50] focus:outline focus:outline-1 focus:outline-[#426b50]"
                         />
+                        {error.email && <p className="text-red-600">{error.email}</p>}
 
-                        <label htmlFor="emailInput" className="text-sm font-medium">
+                        <label htmlFor="passwordInput" className="text-sm font-medium">
                             Password
                         </label>
                         <span className='text-red-500'>*</span>
                         <input
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                             type="password"
                             id="passwordInput"
                             placeholder="Abcd123#"
                             className="mt-1.5 h-10 w-full rounded-md border border-[#b9c6cf] bg-white px-3 text-[15px] placeholder:text-[#8a99a5] focus:border-[#426b50] focus:outline focus:outline-1 focus:outline-[#426b50]"
                         />
+                        {error.password && <p className="text-red-600">{error.password}</p>}
+
                         <button
                             type="submit"
-                            onClick={() => navigate('/dashboard')}
                             className={`mt-4 w-full rounded-md bg-[#426b50] px-3 py-2.5 text-sm font-medium text-white hover:bg-[#365a43] ${focus}`}
                         >
                             Continue
                         </button>
+                        {error.missing && <p className="text-red-600">{error.missing}</p>}
                     </form>
 
                     <div className="my-6 flex items-center gap-3 text-xs text-[#5b6b78]">
@@ -77,7 +136,7 @@ export default function Signin() {
                         <button type="button" className={providerButton}>
                             Continue with Microsoft
                         </button>
-                        <button type="button" className={providerButton}>
+                        <button type="button" disabled={loading} className={providerButton}>
                             Continue with VK
                         </button>
                     </div>

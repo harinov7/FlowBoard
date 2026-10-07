@@ -1,9 +1,38 @@
 import { useNavigate, Link } from "react-router-dom";
 import type { Board } from "./project";
+import { useState, type ReactNode } from "react";
+import { UserAuth } from "../context/AuthContext";
 
-export default function Dashboard({boards}: {boards: Board[]}) {
+export default function Dashboard({ boards }: { boards: Board[] }) {
 
     const navigate = useNavigate()
+
+    const [profile, setProfile] = useState<ReactNode>();
+    const [profileToggle, setProfileToggle] = useState<boolean>(false);
+
+    function handleClickProfile() {
+        setProfileToggle(!profileToggle)
+        setProfile(
+            <div className="relative hover:cursor-pointer">
+                <div className="absolute whitespace-nowrap -left-7 md:-left-4 top-2 bg-white text-sm font-medium px-2 py-1 border border-[#dedfd9] rounded-md hover:bg-[#f8f8f6]">
+                    <button onClick={handleSignOut}>Sign Out</button>
+                </div>
+            </div>
+        )
+    }
+
+    const { signOut } = UserAuth()
+
+    async function handleSignOut(e: React.MouseEvent<HTMLButtonElement>) {
+        e.preventDefault()
+
+        try {
+            await signOut()
+            navigate("/")
+        } catch (err) {
+            console.error(err)
+        }
+    }
 
     return (
         <div className="min-h-dvh bg-[#f8f8f6] text-[#252823]">
@@ -22,12 +51,17 @@ export default function Dashboard({boards}: {boards: Board[]}) {
                         <button className="rounded-md border border-[#dedfd9] px-3 py-2 text-sm font-medium text-[#454941] hover:bg-[#f8f8f6]">
                             + Buat board
                         </button>
-                        <button
-                            aria-label="Profil pengguna"
-                            className="flex h-9 w-9 items-center justify-center rounded-full bg-[#e7eee8] text-xs font-semibold text-[#426b50]"
-                        >
-                            FA
-                        </button>
+                        <div>
+                            <button
+                                onClick={handleClickProfile}
+                                aria-label="Profil pengguna"
+                                className="flex h-9 w-9 items-center justify-center rounded-full bg-[#e7eee8] text-xs font-semibold text-[#426b50] hover:cursor-pointer"
+                            >
+                                FA
+                            </button>
+                            {profileToggle && profile}
+                        </div>
+
                     </div>
                 </nav>
             </header>
@@ -90,8 +124,8 @@ export default function Dashboard({boards}: {boards: Board[]}) {
                                             <span
                                                 key={`${board.titleDashboard}-${member}`}
                                                 className={`flex h-7 w-7 items-center justify-center rounded-full border-2 border-white text-[9px] font-semibold ${index % 2 === 0
-                                                        ? "bg-[#e7eee8] text-[#426b50]"
-                                                        : "bg-[#eee9e2] text-[#78684f]"
+                                                    ? "bg-[#e7eee8] text-[#426b50]"
+                                                    : "bg-[#eee9e2] text-[#78684f]"
                                                     }`}
                                             >
                                                 {member}

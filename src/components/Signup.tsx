@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import {Link, useNavigate} from 'react-router-dom'
+import { useState, type ReactNode } from 'react';
+import { Link, useNavigate } from 'react-router-dom'
 import { UserAuth } from '../context/AuthContext';
 
 const focus =
@@ -10,16 +10,54 @@ const providerButton =
 
 const stageColors = ["bg-[#92978d]", "bg-[#b18b4a]", "bg-[#66816c]", "bg-[#426b50]"];
 
+interface result {
+    success: boolean;
+    data?: any;
+    error?: any
+}
+
+interface error {
+    email: string;
+    password: string;
+}
+
 export default function Signup() {
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-
-    const session = UserAuth()
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [error, setError] = useState<error>({email: "", password: ""});
+    const [loading, setLoading] = useState<boolean>(false);
 
     const navigate = useNavigate()
-    
+    const { signUpNewUser } = UserAuth()
+
+    async function handleSignUp(e: any) {
+        e.preventDefault()
+        setLoading(true)
+
+        const newErrors: error = {email: "", password: ""}
+
+        if (email.trim().length === 0) {
+            newErrors.email = "you didn't pass the email yet";
+        }
+        if (password.trim().length === 0) {
+            newErrors.password = "you didn't pass the password yet";
+        }
+        setError(newErrors)
+
+        try {
+            const result: result = await signUpNewUser(email, password);
+
+            if (result.success) {
+                navigate("/dashboard")
+            }
+        } catch (error) {
+            console.error("an error occured: ", error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
         <div className="flex min-h-dvh flex-col items-center justify-center bg-[#e9eef1] px-5 py-10 font-['Schibsted_Grotesk',system-ui,sans-serif] text-[#172a3a]">
             <a href="#" className={`mb-6 text-[17px] font-bold tracking-tight ${focus}`}>
@@ -41,32 +79,36 @@ export default function Signup() {
                         Use your email or another account.
                     </p>
 
-                    <form className="mt-4">
+                    <form onSubmit={handleSignUp} className="mt-4">
                         <label htmlFor="emailInput" className="text-sm font-medium">
                             Email
                         </label>
                         <span className='text-red-500'>*</span>
                         <input
+                            onChange={(e: any) => setEmail(e.target.value)}
                             type="email"
                             id="emailInput"
                             autoComplete="email"
                             placeholder="you@example.com"
                             className="mt-1.5 h-10 w-full rounded-md border border-[#b9c6cf] bg-white px-3 text-[15px] placeholder:text-[#8a99a5] focus:border-[#426b50] focus:outline focus:outline-1 focus:outline-[#426b50]"
                         />
+                        {error.email && <p className="text-red-600">{error.email}</p>}
 
                         <label htmlFor="emailInput" className="text-sm font-medium">
                             Password
                         </label>
                         <span className='text-red-500'>*</span>
                         <input
+                            onChange={(e: any) => setPassword(e.target.value)}
                             type="password"
                             id="passwordInput"
                             placeholder="Abcd123#"
                             className="mt-1.5 h-10 w-full rounded-md border border-[#b9c6cf] bg-white px-3 text-[15px] placeholder:text-[#8a99a5] focus:border-[#426b50] focus:outline focus:outline-1 focus:outline-[#426b50]"
                         />
+                        {error.password && <p className="text-red-600">{error.password}</p>}
+
                         <button
                             type="submit"
-                            onClick={() => navigate('/dashboard')}
                             className={`mt-4 w-full rounded-md bg-[#426b50] px-3 py-2.5 text-sm font-medium text-white hover:bg-[#365a43] ${focus}`}
                         >
                             Continue
@@ -86,7 +128,7 @@ export default function Signup() {
                         <button type="button" className={providerButton}>
                             Continue with Microsoft
                         </button>
-                        <button type="button" className={providerButton}>
+                        <button type="button" disabled={loading} className={providerButton}>
                             Continue with VK
                         </button>
                     </div>
@@ -96,10 +138,10 @@ export default function Signup() {
             <p className="mt-6 text-sm text-[#5b6b78]">
                 Already have an account?{" "}
                 <Link
-                    to="/"
+                    to="/signin"
                     className={`font-medium text-[#172a3a] underline underline-offset-4 hover:text-[#426b50] ${focus}`}
                 >
-                    Log in
+                    Sign in
                 </Link>
             </p>
         </div>
