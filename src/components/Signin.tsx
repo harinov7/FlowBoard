@@ -8,7 +8,7 @@ const providerButton =
 
 const stageColors = ["bg-[#92978d]", "bg-[#b18b4a]", "bg-[#66816c]", "bg-[#426b50]"];
 
-export default function Login() {
+export default function Signin() {
 
     const navigate = useNavigate()
     return (
@@ -26,7 +26,7 @@ export default function Login() {
 
                 <div className="p-7 sm:p-8">
                     <h1 className="text-2xl font-semibold leading-tight tracking-[-0.02em]">
-                        Log in
+                        Sign in
                     </h1>
                     <p className="mt-1.5 text-[15px] text-[#5b6b78]">
                         Use your email or another account.
@@ -57,7 +57,7 @@ export default function Login() {
                         />
                         <button
                             type="submit"
-                            onClick={() => navigate('/Dashboard')}
+                            onClick={() => navigate('/dashboard')}
                             className={`mt-4 w-full rounded-md bg-[#426b50] px-3 py-2.5 text-sm font-medium text-white hover:bg-[#365a43] ${focus}`}
                         >
                             Continue

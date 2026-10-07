@@ -9,7 +9,7 @@ export default function Dashboard({boards}: {boards: Board[]}) {
         <div className="min-h-dvh bg-[#f8f8f6] text-[#252823]">
             <header className="sticky top-0 border-b border-[#e8e9e5] bg-white z-99">
                 <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
-                    <Link to="/" className="flex items-center gap-2.5">
+                    <Link to="/dashboard" className="flex items-center gap-2.5">
                         <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#426b50] text-sm font-bold text-white">
                             F
                         </span>
@@ -62,7 +62,7 @@ export default function Dashboard({boards}: {boards: Board[]}) {
                         <button
                             key={board.id}
                             type="button"
-                            onClick={() => navigate(`/Dashboard/${board.id}`)}
+                            onClick={() => navigate(`/dashboard/${board.id}`)}
                             className="group overflow-hidden rounded-lg border border-[#e4e5df] bg-white text-left transition hover:border-[#c8cec6] hover:shadow-sm"
                         >
                             <div className={`h-24 ${board.backgroundDashboard} p-4`}>

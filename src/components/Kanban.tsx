@@ -21,7 +21,7 @@ export default function Kanban({ project }: kanbanProps) {
             <header className="border-b border-[#c9d3da] bg-[#f6f8f9]">
                 <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 sm:px-8">
                     <div className="flex items-baseline gap-3">
-                        <Link to="/" className={`text-[17px] font-bold tracking-tight ${focus}`}>
+                        <Link to="/dashboard" className={`text-[17px] font-bold tracking-tight ${focus}`}>
                             FlowBoard
                         </Link>
                         <span className="text-sm text-[#5b6b78]">{project.workspace}</span>

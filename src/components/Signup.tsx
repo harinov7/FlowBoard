@@ -1,4 +1,6 @@
-import {Link} from 'react-router-dom'
+import { useState } from 'react';
+import {Link, useNavigate} from 'react-router-dom'
+import { UserAuth } from '../context/AuthContext';
 
 const focus =
     "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#172a3a]";
@@ -9,6 +11,15 @@ const providerButton =
 const stageColors = ["bg-[#92978d]", "bg-[#b18b4a]", "bg-[#66816c]", "bg-[#426b50]"];
 
 export default function Signup() {
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+
+    const session = UserAuth()
+
+    const navigate = useNavigate()
+    
     return (
         <div className="flex min-h-dvh flex-col items-center justify-center bg-[#e9eef1] px-5 py-10 font-['Schibsted_Grotesk',system-ui,sans-serif] text-[#172a3a]">
             <a href="#" className={`mb-6 text-[17px] font-bold tracking-tight ${focus}`}>
@@ -55,6 +66,7 @@ export default function Signup() {
                         />
                         <button
                             type="submit"
+                            onClick={() => navigate('/dashboard')}
                             className={`mt-4 w-full rounded-md bg-[#426b50] px-3 py-2.5 text-sm font-medium text-white hover:bg-[#365a43] ${focus}`}
                         >
                             Continue
