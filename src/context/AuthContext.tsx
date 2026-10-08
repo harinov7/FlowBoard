@@ -7,7 +7,8 @@ interface AuthContextType {
     session: Session | null | undefined;
     signUpNewUser: (email: string, password: string) => Promise<{ success: boolean; data?: any; error?: any }>;
     signInUser: (email: string, password: string) => Promise<{ success: boolean; data?: any, error?: any }>;
-    signOut: () => Promise<void>
+    signOut: () => Promise<void>;
+    signWithGoogle: () => Promise<{ success: boolean; data?: any, error?: any }>;
     // karena fungsinya menghubungi internet (asinkronus), dia akan mengembalikan sebuah Promise yang berisi objek hasil (success, data, atau error).
 }
 
@@ -43,6 +44,25 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
         return { success: true, data };
     }
 
+    async function signWithGoogle() {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: "google", // artinya login pakai provider google
+            options: {
+                redirectTo: `${window.location.origin}/dashboard`, // biar langsung redirect ke dashboard
+                queryParams: {
+                    prompt: "select_account", // biar bisa pilih akun dulu
+                },
+            },
+        });
+
+        if (error) {
+            console.error("Google sign-in error:", error);
+            return { success: false, error };
+        }
+
+        return { success: true, data };
+    }
+
     // Sign in
     async function signInUser(email: string, password: string) {
         try {
@@ -72,7 +92,7 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
     }
 
     return (
-        <AuthContext.Provider value={{ session, signUpNewUser, signInUser, signOut }}>
+        <AuthContext.Provider value={{ session, signUpNewUser, signInUser, signOut, signWithGoogle }}>
             {children}
         </AuthContext.Provider>
     );

@@ -30,7 +30,7 @@ export default function Signin() {
     const [loading, setLoading] = useState<boolean>(false);
 
     const navigate = useNavigate()
-    const { signInUser } = UserAuth()
+    const { signInUser, signWithGoogle } = UserAuth()
 
     async function handleSignIn(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
@@ -64,6 +64,20 @@ export default function Signin() {
 
         console.log(error)
     }
+    async function handleSignUpWithGoogle(e: React.MouseEvent<HTMLButtonElement>) {
+            e.preventDefault()
+            setLoading(true)
+            try {
+                const result = await signWithGoogle()
+                if (!result.success) {
+                    setLoading(false)
+                }
+            } catch (err) {
+                console.error(err)
+            } finally {
+                setLoading(false)
+            }
+        }
 
     return (
         <div className="flex min-h-dvh flex-col items-center justify-center bg-[#e9eef1] px-5 py-10 font-['Schibsted_Grotesk',system-ui,sans-serif] text-[#172a3a]">
@@ -130,14 +144,10 @@ export default function Signin() {
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <button type="button" className={providerButton}>
+                        <button onClick={handleSignUpWithGoogle} 
+                        type="button" 
+                        className={providerButton}>
                             Continue with Google
-                        </button>
-                        <button type="button" className={providerButton}>
-                            Continue with Microsoft
-                        </button>
-                        <button type="button" disabled={loading} className={providerButton}>
-                            Continue with VK
                         </button>
                     </div>
                 </div>

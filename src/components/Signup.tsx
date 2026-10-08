@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import React, { useState, type ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
 import { UserAuth } from '../context/AuthContext';
 
@@ -25,17 +25,17 @@ export default function Signup() {
 
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const [error, setError] = useState<error>({email: "", password: ""});
+    const [error, setError] = useState<error>({ email: "", password: "" });
     const [loading, setLoading] = useState<boolean>(false);
 
     const navigate = useNavigate()
-    const { signUpNewUser } = UserAuth()
+    const { signUpNewUser, signWithGoogle } = UserAuth()
 
-    async function handleSignUp(e: any) {
+    async function handleSignUp(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault()
         setLoading(true)
 
-        const newErrors: error = {email: "", password: ""}
+        const newErrors: error = { email: "", password: "" }
 
         if (email.trim().length === 0) {
             newErrors.email = "you didn't pass the email yet";
@@ -53,6 +53,21 @@ export default function Signup() {
             }
         } catch (error) {
             console.error("an error occured: ", error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    async function handleSignUpWithGoogle(e: React.MouseEvent<HTMLButtonElement>) {
+        e.preventDefault()
+        setLoading(true)
+        try {
+            const result = await signWithGoogle()
+            if (!result.success) {
+                setLoading(false)
+            }
+        } catch (err) {
+            console.error(err)
         } finally {
             setLoading(false)
         }
@@ -85,7 +100,7 @@ export default function Signup() {
                         </label>
                         <span className='text-red-500'>*</span>
                         <input
-                            onChange={(e: any) => setEmail(e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                             type="email"
                             id="emailInput"
                             autoComplete="email"
@@ -99,7 +114,7 @@ export default function Signup() {
                         </label>
                         <span className='text-red-500'>*</span>
                         <input
-                            onChange={(e: any) => setPassword(e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                             type="password"
                             id="passwordInput"
                             placeholder="Abcd123#"
@@ -122,14 +137,10 @@ export default function Signup() {
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <button type="button" className={providerButton}>
+                        <button onClick={handleSignUpWithGoogle}
+                            type="button"
+                            className={providerButton}>
                             Continue with Google
-                        </button>
-                        <button type="button" className={providerButton}>
-                            Continue with Microsoft
-                        </button>
-                        <button type="button" disabled={loading} className={providerButton}>
-                            Continue with VK
                         </button>
                     </div>
                 </div>
